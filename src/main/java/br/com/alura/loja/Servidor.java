@@ -30,6 +30,7 @@ public class Servidor {
 		System.out.println("Servidor rodando");
 		System.in.read();
 		server.stop();
+		System.out.println("Servidor parado");
 
 	}
 
