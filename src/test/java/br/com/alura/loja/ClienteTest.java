@@ -22,10 +22,15 @@ import br.com.alura.loja.modelo.Projeto;
 public class ClienteTest {
 
 	private HttpServer server;
-
+	private Client client;
+	
 	@Before
 	public void startaServidor() {
+		
 		this.server = Servidor.startaServidor();
+		
+		// CRIA UM CLIENTE HTTP:
+		this.client = ClientBuilder.newClient();
 	}
 
 	@After
@@ -35,9 +40,6 @@ public class ClienteTest {
 
 	@Test
 	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado() {
-
-		// CRIA UM CLIENTE HTTP:
-		Client client = ClientBuilder.newClient();
 
 		// DEFINE A URL QUE O CLIENTE VAI CONSUMIR:
 		WebTarget target = client.target("http://localhost:8080");
@@ -58,9 +60,6 @@ public class ClienteTest {
 	@Test
 	public void testaQueBuscarUmProjetoTrazOProjetoEsperado() {
 
-		// CRIA UM CLIENTE HTTP:
-		Client client = ClientBuilder.newClient();
-
 		// DEFINE A URL QUE O CLIENTE VAI CONSUMIR:
 		WebTarget target = client.target("http://localhost:8080");
 
@@ -78,7 +77,6 @@ public class ClienteTest {
 	@Test
 	public void testaAdicionarCarrinhoPostXml()
 	{
-		Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://localhost:8080");
         
         // CRIA UM CARRINHO, E O CONVERTE PARA XML:
@@ -92,8 +90,16 @@ public class ClienteTest {
         Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
         Response response = target.path("/carrinhos").request().post(entity);
         
-        // VERIFICA O RETORNO SE É SUCESSO:
-        Assert.assertEquals("<status>sucesso</status>", response.readEntity(String.class));
+        // VERIFICA O RETORNO SE É SUCESSO (STATUS CODE 201, CREATED):
+        Assert.assertEquals(201, response.getStatus());
+        
+        // PEGA O CONTEÚDO DO HEADER LOCATION (201 CREATED) DE RESPOSTA:
+        String location = response.getHeaderString("Location");
+        
+        // O LINK DO NOVO CONTEÚDO CRIADO, TENTAMOS ACESSA-LO E VERIFICAR SE O CONTEÚDO ENVIADO ESTÁ lÁ
+        String conteudoCriado = client.target(location).request().get(String.class);
+        
+        Assert.assertTrue(conteudoCriado.contains("São Paulo"));
 	}
 
 }

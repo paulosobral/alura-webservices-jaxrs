@@ -1,11 +1,15 @@
 package br.com.alura.loja.resource;
 
+import java.net.URI;
+
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -31,13 +35,15 @@ public class CarrinhoResource {
 	
 	// ADICIONA UM CARRINHO CONVERTENDO XML PARA OBJETO JAVA ATRAVÉS DO MÉTODO POST NA URL /carrinhos (SEM PATH DEFINIDO)
 	@POST
-	@Produces(MediaType.APPLICATION_XML)
-	public String adiciona(String conteudo)
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response adiciona(String conteudo)
 	{	
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
 		new CarrinhoDAO().adiciona(carrinho);
 		
-		return "<status>sucesso</status>";
+		// DEVOLVE O STATUS CODE PARA O CLIENTE CREATED (201), E INFORMA A URI ONDE PODEMOS ACESSAR O RECURSO CRIADO (URI DO WEBSERVICE QUE VISUALIZA O CARRINHO COM O ID CRIADO):
+		URI uri = URI.create("/carrinhos/" + carrinho.getId());
+		return Response.created(uri).build();
 	}
 	
 }
