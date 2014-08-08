@@ -3,6 +3,7 @@ package br.com.alura.loja.resource;
 import java.net.URI;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -46,6 +47,16 @@ public class ProjetoResource {
 		// VISUALIZA O PROJETO COM O ID CRIADO):
 		URI uri = URI.create("/projetos/" + projeto.getId());
 		return Response.created(uri).build();
+	}
+
+	// SUBRECURSO (RECURSO DENTRO DE RECURSO) QUE EXCLUÍ (MÉTODO DELETE DO HTTP) PROJETO PELO ID
+	@Path("/remove/{id}")
+	@DELETE
+	public Response remoreProjeto(@PathParam("id") long id) {
+		
+		new ProjetoDAO().remove(id);
+
+		return Response.ok().build();
 	}
 
 }

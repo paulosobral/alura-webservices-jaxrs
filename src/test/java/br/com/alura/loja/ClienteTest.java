@@ -8,6 +8,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,8 +31,12 @@ public class ClienteTest {
 		
 		this.server = Servidor.startaServidor();
 		
+		// CRIA CLIENTE COM FILTRO DE LOGGING DA IMPLEMENTAÇÃO DO JAX-RS JERSEY:
+		ClientConfig config = new ClientConfig();
+		config.register(new LoggingFilter());
+		
 		// CRIA UM CLIENTE HTTP:
-		this.client = ClientBuilder.newClient();
+		this.client = ClientBuilder.newClient(config);
 	}
 
 	@After
