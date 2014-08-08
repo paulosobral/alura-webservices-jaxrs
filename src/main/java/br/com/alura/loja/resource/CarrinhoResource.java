@@ -23,24 +23,24 @@ import br.com.alura.loja.modelo.Produto;
 @Path("carrinhos")
 public class CarrinhoResource {
 
-	// PRODUZ ATRAVÉZ DO MÉTODO GET HTTP, UM MEDIATYPE DO TIPO XML:
+	// PRODUZ ATRAVÉZ DO MÉTODO GET HTTP, UM MEDIATYPE DO TIPO XML (usando JAXB):
 	@Path("{id}")
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public String busca(@PathParam("id") long id) {
+	public Carrinho busca(@PathParam("id") long id) {
 		CarrinhoDAO carrinhoDao = new CarrinhoDAO();
 
 		Carrinho carrinho = carrinhoDao.busca(id);
 
-		return carrinho.toXML();
+		return carrinho;
 	}
 
 	// ADICIONA UM CARRINHO CONVERTENDO XML PARA OBJETO JAVA ATRAVÉS DO MÉTODO
 	// POST NA URL /carrinhos (SEM PATH DEFINIDO)
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response adiciona(String conteudo) {
-		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
+	public Response adiciona(Carrinho carrinho) {
+		
 		new CarrinhoDAO().adiciona(carrinho);
 
 		// DEVOLVE O STATUS CODE PARA O CLIENTE CREATED (201), E INFORMA A URI
@@ -64,18 +64,15 @@ public class CarrinhoResource {
 	}
 
 	// SUBRECURSO (RECURSO DENTRO DE RECURSO) QUE ATUALIZA (MÉTODO PUT DO HTTP)
-	// COM CONTEÚDO XML
+	// COM CONTEÚDO XML (USANDO JAXB)
 	// PRODUTO COM ID DEFINIDO DENTRO DO CARRINHO COM ID DEFINIDO:
 	@Path("{id}/produto/{produtoId}")
 	@Consumes(MediaType.APPLICATION_XML)
 	@PUT
-	public Response alteraProduto(String conteudo, @PathParam("id") long id,
+	public Response alteraProduto(Produto produto, @PathParam("id") long id,
 			@PathParam("produtoId") long produtoId) {
 
 		Carrinho carrinho = new CarrinhoDAO().busca(id);
-
-		// CONVERTE XML PASSADO PARA UM CARRINHO:
-		Produto produto = (Produto) new XStream().fromXML(conteudo);
 
 		// ATUALIZA CARRINHO:
 		carrinho.troca(produto);

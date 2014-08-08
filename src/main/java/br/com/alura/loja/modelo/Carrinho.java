@@ -11,12 +11,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 
+// XmlRootElement DIZ QUE ESTE ELEMENTO É UM ELEMENTO VÁLIDO XML DO JAXB:
+// XmlAccessType DIZ QUE TODOS OS CAMPOS SERAM SERIALIZADOS NO XML:
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Carrinho {
 
 	private List<Produto> produtos = new ArrayList<Produto>();
 	private String rua;
 	private String cidade;
 	private long id;
+	
+	// O JAXB SÓ FUNCIONA COM UM CONSTRUTOR PADRÃO VAZIO:
+	public Carrinho() {
+		super();
+	}
 
 	public Carrinho adiciona(Produto produto) {
 		produtos.add(produto);

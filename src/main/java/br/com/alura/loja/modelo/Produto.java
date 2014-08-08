@@ -1,6 +1,13 @@
 package br.com.alura.loja.modelo;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+// XmlRootElement DIZ QUE ESTE ELEMENTO É UM ELEMENTO VÁLIDO XML DO JAXB:
+// XmlAccessType DIZ QUE TODOS OS CAMPOS SERAM SERIALIZADOS NO XML:
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Produto {
 
 	private double preco;
@@ -8,6 +15,11 @@ public class Produto {
 	private String nome;
 	private int quantidade;
 	
+	// O JAXB SÓ FUNCIONA COM UM CONSTRUTOR PADRÃO VAZIO:
+	public Produto() {
+		super();
+	}
+
 	public Produto(long id, String nome, double preco, int quantidade) {
 		this.id = id;
 		this.nome = nome;
